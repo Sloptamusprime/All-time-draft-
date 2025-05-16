@@ -31,14 +31,44 @@ const DraftRoom = () => {
   };
 
   const handlePick = (player) => {
-    if (drafted.includes(player.id)) return;
+  if (drafted.includes(player.id)) return;
 
-    const drafter = draftOrder[currentPickIndex];
-    setDrafted(prev => [...prev, player.id]);
-    setTeams(prev => ({
-      ...prev,
-      [drafter]: [...prev[drafter], player]
-    }));
+  const drafter = draftOrder[currentPickIndex];
+  setDrafted((prev) => [...prev, player.id]);
+  setTeams((prev) => ({
+    ...prev,
+    [drafter]: [...prev[drafter], player],
+  }));
+
+  const totalPicks = draftOrder.length * maxPlayersPerTeam;
+  const totalDrafted = drafted.length + 1;
+
+  if (totalDrafted >= totalPicks) {
+    setDrafting(false);
+    alert('Draft complete!');
+    return;
+  }
+
+  // Snake draft turn logic
+  let nextIndex = currentPickIndex;
+  if (isReversing) {
+    nextIndex--;
+    if (nextIndex < 0) {
+      nextIndex = 0;
+      setIsReversing(false);
+      setRound((r) => r + 1);
+    }
+  } else {
+    nextIndex++;
+    if (nextIndex >= draftOrder.length) {
+      nextIndex = draftOrder.length - 1;
+      setIsReversing(true);
+      setRound((r) => r + 1);
+    }
+  }
+
+  setCurrentPickIndex(nextIndex);
+};
 
     // Advance pick
     const totalPicks = draftOrder.length * maxPlayersPerTeam;
