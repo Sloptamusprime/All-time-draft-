@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import players from '../players.json';
+import PlayerCard from './PlayerCard';
+
 
 const DraftRoom = () => {
   const [numCPUs, setNumCPUs] = useState(2);
@@ -112,15 +114,13 @@ const DraftRoom = () => {
           ))}
 
           <h2>Available Players</h2>
-          <ul>
-            {playersLeft.filter(p => !drafted.includes(p.id)).map(player => (
-              <li key={player.id}>
-                <button onClick={() => handlePick(player)}>
-                  {player.name} ({player.position}) - {player.rating}
-                </button>
-              </li>
-            ))}
-          </ul>
+         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+  {playersLeft
+    .filter(p => !drafted.includes(p.id))
+    .map(player => (
+      <button key={player.id} onClick={() => handlePick(player)}>
+        <PlayerCard player={player} />
+      </button>
 
           <button onClick={resetDraft}>Restart Draft</button>
         </>
