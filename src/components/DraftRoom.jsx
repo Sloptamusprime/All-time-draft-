@@ -102,31 +102,31 @@ const DraftRoom = () => {
           <p>Current Pick: {draftOrder[currentPickIndex]}</p>
           <p>Draft {playersLeft.length === 0 ? 'Complete' : 'In Progress'}</p>
 
-          {draftOrder.map(name => (
-            <div key={name}>
-              <h3>{name}'s Team:</h3>
-              <ul>
-                {(teams[name] || []).map(p => (
-                  <li key={p.id}>{p.name} ({p.position})</li>
-                ))}
-              </ul>
-            </div>
-          ))}
+{draftOrder.map(name => (
+  <div key={name}>
+    <h3>{name}'s Team:</h3>
+    <ul>
+      {(teams[name] || []).map(p => (
+        <li key={p.id}>{p.name} ({p.position})</li>
+      ))}
+    </ul>
+  </div>
+))}
 
-          <h2>Available Players</h2>
-         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+<h2>Available Players</h2>
+<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
   {playersLeft
     .filter(p => !drafted.includes(p.id))
     .map(player => (
       <button key={player.id} onClick={() => handlePick(player)}>
         <PlayerCard player={player} />
       </button>
+  ))}
+</div>
 
-          <button onClick={resetDraft}>Restart Draft</button>
-        </>
-      )}
-    </div>
-  );
-};
+<button onClick={resetDraft} className="mt-4 px-4 py-2 bg-blue-500 text-white rounded">
+  Restart Draft
+</button>
+
 
 export default DraftRoom;
