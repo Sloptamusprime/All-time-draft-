@@ -1,0 +1,242 @@
+[
+  {
+    "name": "Lionel Messi",
+    "position": "RW",
+    "rating": 98,
+    "id": 1
+  },
+  {
+    "name": "Cristiano Ronaldo",
+    "position": "ST",
+    "rating": 97,
+    "id": 2
+  },
+  {
+    "name": "Pel\u00e9",
+    "position": "CF",
+    "rating": 96,
+    "id": 3
+  },
+  {
+    "name": "Diego Maradona",
+    "position": "CAM",
+    "rating": 97,
+    "id": 4
+  },
+  {
+    "name": "Ronaldinho",
+    "position": "LW",
+    "rating": 94,
+    "id": 5
+  },
+  {
+    "name": "Thierry Henry",
+    "position": "ST",
+    "rating": 91,
+    "id": 6
+  },
+  {
+    "name": "Kylian Mbapp\u00e9",
+    "position": "LW",
+    "rating": 92,
+    "id": 7
+  },
+  {
+    "name": "Erling Haaland",
+    "position": "ST",
+    "rating": 91,
+    "id": 8
+  },
+  {
+    "name": "George Best",
+    "position": "RW",
+    "rating": 90,
+    "id": 9
+  },
+  {
+    "name": "Marco van Basten",
+    "position": "ST",
+    "rating": 90,
+    "id": 10
+  },
+  {
+    "name": "Zinedine Zidane",
+    "position": "CAM",
+    "rating": 95,
+    "id": 11
+  },
+  {
+    "name": "Xavi Hernandez",
+    "position": "CM",
+    "rating": 93,
+    "id": 12
+  },
+  {
+    "name": "Andres Iniesta",
+    "position": "CM",
+    "rating": 92,
+    "id": 13
+  },
+  {
+    "name": "Kevin De Bruyne",
+    "position": "CAM",
+    "rating": 92,
+    "id": 14
+  },
+  {
+    "name": "Luka Modric",
+    "position": "CM",
+    "rating": 89,
+    "id": 15
+  },
+  {
+    "name": "Bobby Charlton",
+    "position": "CAM",
+    "rating": 89,
+    "id": 16
+  },
+  {
+    "name": "Michel Platini",
+    "position": "CAM",
+    "rating": 91,
+    "id": 17
+  },
+  {
+    "name": "Garrincha",
+    "position": "RW",
+    "rating": 91,
+    "id": 18
+  },
+  {
+    "name": "Frank Lampard",
+    "position": "CM",
+    "rating": 88,
+    "id": 19
+  },
+  {
+    "name": "Steven Gerrard",
+    "position": "CM",
+    "rating": 88,
+    "id": 20
+  },
+  {
+    "name": "Franz Beckenbauer",
+    "position": "CB",
+    "rating": 94,
+    "id": 21
+  },
+  {
+    "name": "Paolo Maldini",
+    "position": "CB",
+    "rating": 93,
+    "id": 22
+  },
+  {
+    "name": "Virgil van Dijk",
+    "position": "CB",
+    "rating": 91,
+    "id": 23
+  },
+  {
+    "name": "Sergio Ramos",
+    "position": "CB",
+    "rating": 89,
+    "id": 24
+  },
+  {
+    "name": "Cafu",
+    "position": "RB",
+    "rating": 88,
+    "id": 25
+  },
+  {
+    "name": "Roberto Carlos",
+    "position": "LB",
+    "rating": 88,
+    "id": 26
+  },
+  {
+    "name": "Carlos Alberto",
+    "position": "RB",
+    "rating": 87,
+    "id": 27
+  },
+  {
+    "name": "Philipp Lahm",
+    "position": "RB",
+    "rating": 87,
+    "id": 28
+  },
+  {
+    "name": "Alessandro Nesta",
+    "position": "CB",
+    "rating": 87,
+    "id": 29
+  },
+  {
+    "name": "Giorgio Chiellini",
+    "position": "CB",
+    "rating": 86,
+    "id": 30
+  },
+  {
+    "name": "Lev Yashin",
+    "position": "GK",
+    "rating": 92,
+    "id": 31
+  },
+  {
+    "name": "Gianluigi Buffon",
+    "position": "GK",
+    "rating": 91,
+    "id": 32
+  },
+  {
+    "name": "Manuel Neuer",
+    "position": "GK",
+    "rating": 89,
+    "id": 33
+  },
+  {
+    "name": "Iker Casillas",
+    "position": "GK",
+    "rating": 89,
+    "id": 34
+  },
+  {
+    "name": "Peter Schmeichel",
+    "position": "GK",
+    "rating": 88,
+    "id": 35
+  },
+  {
+    "name": "Dino Zoff",
+    "position": "GK",
+    "rating": 88,
+    "id": 36
+  },
+  {
+    "name": "Sepp Maier",
+    "position": "GK",
+    "rating": 87,
+    "id": 37
+  },
+  {
+    "name": "Oliver Kahn",
+    "position": "GK",
+    "rating": 90,
+    "id": 38
+  },
+  {
+    "name": "Thibaut Courtois",
+    "position": "GK",
+    "rating": 88,
+    "id": 39
+  },
+  {
+    "name": "Alisson Becker",
+    "position": "GK",
+    "rating": 87,
+    "id": 40
+  }
+]
