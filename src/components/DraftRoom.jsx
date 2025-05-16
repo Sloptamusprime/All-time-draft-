@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { playerPool } from '../playerPool';
+import { playerPool } from '../players.json';
 
 const DraftRoom = () => {
   const [numCPUs, setNumCPUs] = useState(2); // User-selectable now
