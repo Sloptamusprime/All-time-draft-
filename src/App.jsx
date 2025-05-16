@@ -55,4 +55,36 @@ export default function App() {
     setLog(events);
   }
 
-  return
+  return (
+    <div className="p-6 max-w-xl mx-auto">
+      <h1 className="text-2xl font-bold mb-4">GOAT Draft (Solo)</h1>
+      {phase === 'draft' && (
+        <div>
+          <h2 className="mb-2">Pick Your Player ({userTeam.length}/7)</h2>
+          <ul className="space-y-2 max-h-96 overflow-y-scroll pr-2">
+            {samplePlayers.map((p) => (
+              <li key={p.name} className="flex justify-between items-center bg-gray-100 p-2 rounded">
+                <span>{p.name} ({p.position})</span>
+                <button
+                  onClick={() => draftPlayer(p)}
+                  disabled={drafted.includes(p.name)}
+                  className="bg-blue-500 text-white px-2 py-1 rounded disabled:opacity-50"
+                >
+                  Draft
+                </button>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {phase === 'sim' && (
+        <div>
+          <h2 className="text-xl font-semibold mb-2">Match Recap</h2>
+          <pre className="bg-black text-green-400 p-4 rounded whitespace-pre-wrap">{log}</pre>
+        </div>
+      )}
+    </div>
+  );
+}
+
