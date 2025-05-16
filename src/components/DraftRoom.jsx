@@ -85,22 +85,65 @@ const DraftRoom = () => {
   };
 
   return (
-    <div>
-      <h1>GOAT Draft - Snake Mode</h1>
-      {!started ? (
-        <div>
-          <label>Number of CPU Opponents:</label>
-          <select value={numCPUs} onChange={e => setNumCPUs(parseInt(e.target.value))}>
-            {[1, 2, 3, 4, 5].map(n => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
-          <button onClick={startDraft}>Start Draft</button>
+  <>
+    <h1 className="text-xl font-bold mb-2">GOAT Draft - Snake Mode</h1>
+    {!started ? (
+      <div>
+        <label className="block mb-2">Number of CPU Opponents:</label>
+        <select
+          value={numCPUs}
+          onChange={e => setNumCPUs(parseInt(e.target.value))}
+          className="border px-2 py-1 rounded"
+        >
+          {[1, 2, 3, 4, 5].map(n => (
+            <option key={n} value={n}>{n}</option>
+          ))}
+        </select>
+        <button
+          onClick={startDraft}
+          className="ml-4 px-4 py-2 bg-green-600 text-white rounded"
+        >
+          Start Draft
+        </button>
+      </div>
+    ) : (
+      <>
+        <p className="mb-2">Current Pick: {draftOrder[currentPickIndex]}</p>
+        {draftComplete && <p className="mb-4 font-semibold">Draft Complete</p>}
+
+        {draftOrder.map(name => (
+          <div key={name}>
+            <h3 className="font-medium mt-2">{name}'s Team:</h3>
+            <ul className="list-disc ml-4">
+              {(teams[name] || []).map(p => (
+                <li key={p.id}>{p.name} ({p.position})</li>
+              ))}
+            </ul>
+          </div>
+        ))}
+
+        <h2 className="mt-6 text-lg font-semibold">Available Players</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+          {playersLeft
+            .filter(p => !drafted.includes(p.id))
+            .map(player => (
+              <button key={player.id} onClick={() => handlePick(player)}>
+                <PlayerCard player={player} />
+              </button>
+          ))}
         </div>
-      ) : (
-        <>
-          <p>Current Pick: {draftOrder[currentPickIndex]}</p>
-          <p>Draft {playersLeft.length === 0 ? 'Complete' : 'In Progress'}</p>
+
+        <button
+          onClick={resetDraft}
+          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
+        >
+          Restart Draft
+        </button>
+      </>
+    )}
+  </>
+);
+
 
 {draftOrder.map(name => (
   <div key={name}>
