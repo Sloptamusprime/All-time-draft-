@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { playerPool } from '../playerPool';
 
 const DraftRoom = () => {
@@ -11,16 +11,29 @@ const DraftRoom = () => {
   const handlePick = (player) => {
     if (drafted.includes(player.id)) return;
 
-    setDrafted([...drafted, player.id]);
+    setDrafted(prev => [...prev, player.id]);
 
     if (turn % 2 === 0) {
-      setUserTeam([...userTeam, player]);
+      setUserTeam(prev => [...prev, player]);
     } else {
-      setCpuTeam([...cpuTeam, player]);
+      setCpuTeam(prev => [...prev, player]);
     }
 
-    setTurn(turn + 1);
+    setTurn(prev => prev + 1);
   };
+
+  useEffect(() => {
+    if (turn % 2 === 1 && turn < 6) {
+      const available = players.filter(p => !drafted.includes(p.id));
+      const best = available.sort((a, b) => b.rating - a.rating)[0];
+
+      if (best) {
+        setTimeout(() => {
+          handlePick(best);
+        }, 1000); // 1 second delay
+      }
+    }
+  }, [turn]);
 
   const availablePlayers = players.filter(p => !drafted.includes(p.id));
 
