@@ -1,18 +1,31 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import players from '../players.json';
 
 const DraftRoom = () => {
   const [numCPUs, setNumCPUs] = useState(2);
-  const [playersPool, setPlayersPool] = useState(players);
+  const [draftOrder, setDraftOrder] = useState([]);
+  const [playersLeft, setPlayersLeft] = useState(players);
   const [drafted, setDrafted] = useState([]);
   const [teams, setTeams] = useState({});
-  const [draftOrder, setDraftOrder] = useState([]);
   const [currentPickIndex, setCurrentPickIndex] = useState(0);
   const [round, setRound] = useState(1);
   const [drafting, setDrafting] = useState(false);
   const [started, setStarted] = useState(false);
+  const [userTeam, setUserTeam] = useState([]);
 
-  const maxPlayersPerTeam = 3;
+  useEffect(() => {
+    if (!drafting || playersLeft.length === 0) return;
+
+    const isUserTurn = draftOrder[currentPickIndex] === 'You';
+    if (!isUserTurn) {
+      const cpu = draftOrder[currentPickIndex];
+      const available = playersLeft.filter(p => !drafted.includes(p.id));
+      const bestAvailable = available.sort((a, b) => b.rating - a.rating)[0];
+      if (bestAvailable) {
+        makePick(cpu, bestAvailable);
+      }
+    }
+  }, [drafting, currentPickIndex]);
 
   const startDraft = () => {
     const newOrder = ['You'];
@@ -21,151 +34,96 @@ const DraftRoom = () => {
     }
     setDraftOrder(newOrder);
 
-    const initialTeams = {};
-    newOrder.forEach(d => {
-      initialTeams[d] = [];
-    });
+    const initialTeams = { You: [] };
+    newOrder.slice(1).forEach(cpu => (initialTeams[cpu] = []));
     setTeams(initialTeams);
     setDrafting(true);
     setStarted(true);
   };
 
-  const handlePick = (player) => {
-  if (drafted.includes(player.id)) return;
-
-  const drafter = draftOrder[currentPickIndex];
-  setDrafted((prev) => [...prev, player.id]);
-  setTeams((prev) => ({
-    ...prev,
-    [drafter]: [...prev[drafter], player],
-  }));
-
-  const totalPicks = draftOrder.length * maxPlayersPerTeam;
-  const totalDrafted = drafted.length + 1;
-
-  if (totalDrafted >= totalPicks) {
-    setDrafting(false);
-    alert('Draft complete!');
-    return;
-  }
-
-  // Snake draft turn logic
-  let nextIndex = currentPickIndex;
-  if (isReversing) {
-    nextIndex--;
-    if (nextIndex < 0) {
-      nextIndex = 0;
-      setIsReversing(false);
-      setRound((r) => r + 1);
-    }
-  } else {
-    nextIndex++;
-    if (nextIndex >= draftOrder.length) {
-      nextIndex = draftOrder.length - 1;
-      setIsReversing(true);
-      setRound((r) => r + 1);
-    }
-  }
-
-  setCurrentPickIndex(nextIndex);
-};
+  const makePick = (drafter, player) => {
+    setDrafted(prev => [...prev, player.id]);
+    setTeams(prev => ({
+      ...prev,
+      [drafter]: [...prev[drafter], player]
+    }));
+    setPlayersLeft(prev => prev.filter(p => p.id !== player.id));
 
     // Advance pick
-    const totalPicks = draftOrder.length * maxPlayersPerTeam;
-    const nextIndex = currentPickIndex + 1;
-    if (drafted.length + 1 >= totalPicks) {
-      setDrafting(false);
-      return;
+    let nextIndex = currentPickIndex + 1;
+    let newRound = round;
+    let reversed = false;
+
+    if (nextIndex >= draftOrder.length) {
+      nextIndex = 0;
+      newRound++;
+      reversed = true;
+      setDraftOrder(prev => [...prev].reverse());
     }
 
-    // Snake order handling
-    const picksPerRound = draftOrder.length;
-    const nextRound = Math.floor((nextIndex) / picksPerRound) + 1;
-    const forward = nextRound % 2 === 1;
-    const indexInOrder = nextIndex % picksPerRound;
-    const newIndex = forward ? indexInOrder : (picksPerRound - 1 - indexInOrder);
-
-    setCurrentPickIndex(newIndex);
-    setRound(nextRound);
+    setCurrentPickIndex(nextIndex);
+    setRound(newRound);
   };
 
-  // CPU pick
-  useEffect(() => {
-    if (!drafting) return;
+  const handlePick = (player) => {
+    if (drafted.includes(player.id)) return;
     const drafter = draftOrder[currentPickIndex];
-    if (drafter !== 'You') {
-      const available = playersPool.filter(p => !drafted.includes(p.id));
-      const best = available.sort((a, b) => b.rating - a.rating)[0];
-      setTimeout(() => handlePick(best), 500); // short delay to mimic thinking
-    }
-  }, [currentPickIndex, drafting]);
+    makePick(drafter, player);
+  };
+
+  const resetDraft = () => {
+    setPlayersLeft(players);
+    setDrafted([]);
+    setTeams({});
+    setCurrentPickIndex(0);
+    setRound(1);
+    setDrafting(false);
+    setStarted(false);
+    setUserTeam([]);
+  };
 
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-2">GOAT Draft - Snake Mode</h1>
-
-      {!started && (
-        <div className="space-y-2">
-          <label>
-            Select number of CPU players:
-            <select
-              className="ml-2 border border-gray-400 p-1"
-              value={numCPUs}
-              onChange={(e) => setNumCPUs(Number(e.target.value))}
-            >
-              {[1, 2, 3, 4, 5].map(n => (
-                <option key={n} value={n}>{n}</option>
-              ))}
-            </select>
-          </label>
-          <br />
-          <button className="bg-blue-500 text-white px-4 py-2 rounded" onClick={startDraft}>
-            Start Draft
-          </button>
+    <div>
+      <h1>GOAT Draft - Snake Mode</h1>
+      {!started ? (
+        <div>
+          <label>Number of CPU Opponents:</label>
+          <select value={numCPUs} onChange={e => setNumCPUs(parseInt(e.target.value))}>
+            {[1, 2, 3, 4, 5].map(n => (
+              <option key={n} value={n}>{n}</option>
+            ))}
+          </select>
+          <button onClick={startDraft}>Start Draft</button>
         </div>
-      )}
+      ) : (
+        <>
+          <p>Current Pick: {draftOrder[currentPickIndex]}</p>
+          <p>Draft {playersLeft.length === 0 ? 'Complete' : 'In Progress'}</p>
 
-      {started && (
-        <div className="mt-4">
-          <p><strong>Current Pick:</strong> {draftOrder[currentPickIndex]}</p>
-          {drafting ? <p>Draft in Progress...</p> : <p>✅ Draft Complete</p>}
-
-          {draftOrder[currentPickIndex] === 'You' && drafting && (
-            <div className="mt-4">
-              <h2 className="font-semibold mb-2">Available Players:</h2>
+          {draftOrder.map(name => (
+            <div key={name}>
+              <h3>{name}'s Team:</h3>
               <ul>
-                {playersPool
-                  .filter(p => !drafted.includes(p.id))
-                  .sort((a, b) => b.rating - a.rating)
-                  .map(p => (
-                    <li key={p.id} className="flex justify-between mb-1">
-                      <span>{p.name} ({p.position}) - {p.rating}</span>
-                      <button
-                        className="bg-green-500 text-white px-2 py-1 rounded"
-                        onClick={() => handlePick(p)}
-                      >
-                        Draft
-                      </button>
-                    </li>
-                  ))}
+                {(teams[name] || []).map(p => (
+                  <li key={p.id}>{p.name} ({p.position})</li>
+                ))}
               </ul>
             </div>
-          )}
+          ))}
 
-          <div className="mt-6">
-            <h2 className="font-bold mb-2">Teams</h2>
-            {Object.entries(teams).map(([teamName, roster]) => (
-              <div key={teamName} className="mb-4">
-                <h3 className="underline">{teamName}'s Team:</h3>
-                <ul>
-                  {roster.map(p => (
-                    <li key={p.id}>{p.name} ({p.position})</li>
-                  ))}
-                </ul>
-              </div>
+          <h2>Available Players</h2>
+          <ul>
+            {playersLeft.filter(p => !drafted.includes(p.id)).map(player => (
+              <li key={player.id}>
+                <button onClick={() => handlePick(player)}>
+                  {player.name} ({player.position}) - {player.rating}
+                </button>
+              </li>
             ))}
-          </div>
-        </div>
+          </ul>
+
+          <button onClick={resetDraft}>Restart Draft</button>
+        </>
       )}
     </div>
   );
