@@ -17,7 +17,7 @@ const DraftRoom = () => {
   useEffect(() => {
     if (!drafting || playersLeft.length === 0) return;
 
-    const isUserTurn = draftOrder[currentPickIndex] === 'You';
+    const isUserTurn = draftOrder[currentPickIndex] === 'Your';
     if (!isUserTurn) {
       const cpu = draftOrder[currentPickIndex];
       const available = playersLeft.filter(p => !drafted.includes(p.id));
@@ -109,16 +109,37 @@ const DraftRoom = () => {
           <p className="mb-2">Current Pick: {draftOrder[currentPickIndex]}</p>
           {draftComplete && <p className="mb-4 font-semibold">Draft Complete</p>}
 
-          {draftOrder.map(name => (
-            <div key={name}>
-              <h3 className="font-medium mt-2">{name}'s Team:</h3>
-              <ul className="list-disc ml-4">
-                {(teams[name] || []).map(p => (
-                  <li key={p.id}>{p.name} ({p.position})</li>
-                ))}
-              </ul>
-            </div>
-          ))}
+{draftOrder.map(name => {
+  const team = teams[name] || [];
+
+  const grouped = {
+    Forwards: team.filter(p => ['ST', 'FW', 'RW', 'LW'].includes(p.position)),
+    Midfielders: team.filter(p => ['CM', 'CAM', 'CDM'].includes(p.position)),
+    Defenders: team.filter(p => ['CB', 'LB', 'RB'].includes(p.position)),
+    Goalkeeper: team.filter(p => p.position === 'GK'),
+  };
+
+  return (
+    <div key={name} className="mt-4">
+      <h3 className="font-medium">
+        {name === 'You' ? 'Your Team:' : `${name}'s Team:`}
+      </h3>
+      {Object.entries(grouped).map(([label, players]) => (
+        players.length > 0 && (
+          <div key={label}>
+            <strong>{label}:</strong>
+            <ul className="ml-4 list-disc">
+              {players.map(p => (
+                <li key={p.id}>{p.name} ({p.position})</li>
+              ))}
+            </ul>
+          </div>
+        )
+      ))}
+    </div>
+  );
+})}
+
 
           <h2 className="mt-6 text-lg font-semibold">Available Players</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
