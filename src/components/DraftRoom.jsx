@@ -18,8 +18,17 @@ const DraftRoom = () => {
     if (!drafting || playersLeft.length === 0) return;
 
     const isUserTurn = draftOrder[currentPickIndex] === 'Your';
-    if (!isUserTurn) {
-      const cpu = draftOrder[currentPickIndex];
+ if (!drafting || playersLeft.length === 0) return;
+
+const drafter = draftOrder[currentPickIndex];
+if (drafter !== 'You') {
+  const available = playersLeft.filter(p => !drafted.includes(p.id));
+  const bestAvailable = available.sort((a, b) => b.rating - a.rating)[0];
+  if (bestAvailable) {
+    setTimeout(() => makePick(drafter, bestAvailable), 600); // slight delay for CPU
+  }
+}
+
       const available = playersLeft.filter(p => !drafted.includes(p.id));
       const bestAvailable = available.sort((a, b) => b.rating - a.rating)[0];
       if (bestAvailable) {
