@@ -14,28 +14,19 @@ const DraftRoom = () => {
   const [started, setStarted] = useState(false);
   const [userTeam, setUserTeam] = useState([]);
 
-  useEffect(() => {
-    if (!drafting || playersLeft.length === 0) return;
+useEffect(() => {
+  if (!drafting || playersLeft.length === 0) return;
 
-    const isUserTurn = draftOrder[currentPickIndex] === 'Your';
- if (!drafting || playersLeft.length === 0) return;
-
-const drafter = draftOrder[currentPickIndex];
-if (drafter !== 'You') {
-  const available = playersLeft.filter(p => !drafted.includes(p.id));
-  const bestAvailable = available.sort((a, b) => b.rating - a.rating)[0];
-  if (bestAvailable) {
-    setTimeout(() => makePick(drafter, bestAvailable), 600); // slight delay for CPU
-  }
-}
-
-      const available = playersLeft.filter(p => !drafted.includes(p.id));
-      const bestAvailable = available.sort((a, b) => b.rating - a.rating)[0];
-      if (bestAvailable) {
-        makePick(cpu, bestAvailable);
-      }
+  const drafter = draftOrder[currentPickIndex];
+  if (drafter !== 'You') {
+    const available = playersLeft.filter(p => !drafted.includes(p.id));
+    const bestAvailable = available.sort((a, b) => b.rating - a.rating)[0];
+    if (bestAvailable) {
+      setTimeout(() => makePick(drafter, bestAvailable), 600); // delay to simulate thinking
     }
-  }, [drafting, currentPickIndex]);
+  }
+}, [drafting, currentPickIndex]);
+
 
   const startDraft = () => {
     const newOrder = ['You'];
