@@ -236,7 +236,7 @@ return (
           </div>
         )}
 
-return (
+        return (
   <div key={name} className="mt-4">
     <h3 className="font-medium">
       {name === 'You' ? 'Your Team:' : `${name}'s Team:`}
@@ -252,10 +252,11 @@ return (
               </li>
             ))}
           </ul>
-        </div>
+        </div> // ✅ You were missing this line
       )
-    );
-  });
+    )}
+  </div>
+);
 };
 
 export default DraftRoom;
