@@ -149,6 +149,13 @@ return (
   {draftOrder.map(name => {
     const team = teams[name] || [];
 
+{draftOrder.map(name => {
+  const team = teams[name] || [];
+
+<div className="grid md:grid-cols-2 gap-6">
+  {draftOrder.map(name => {
+    const team = teams[name] || [];
+
     const grouped = {
       Forwards: team.filter(p => ['ST', 'FW', 'RW', 'LW'].includes(p.position)),
       Midfielders: team.filter(p => ['CM', 'CAM', 'CDM'].includes(p.position)),
@@ -179,6 +186,7 @@ return (
     );
   })}
 </div>
+
 
             const grouped = {
               Forwards: team.filter(p => ['ST', 'FW', 'RW', 'LW'].includes(p.position)),
