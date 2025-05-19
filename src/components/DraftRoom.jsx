@@ -118,9 +118,9 @@ const makePick = (drafter, player) => {
 
   const draftComplete = playersLeft.length === 0;
 
-  return (
-    <>
-      <h1 className="text-xl font-bold mb-2">GOAT Draft - Snake Mode</h1>
+return (
+  <div className="p-6 max-w-6xl mx-auto space-y-8">
+    <h1 className="text-3xl font-bold text-center">GOAT Draft - Snake Mode</h1>
       {!started ? (
         <div>
           <label className="block mb-2">Number of CPU Opponents:</label>
@@ -145,8 +145,40 @@ const makePick = (drafter, player) => {
           <p className="mb-2">Current Pick: {draftOrder[currentPickIndex]}</p>
           {draftComplete && <p className="mb-4 font-semibold">Draft Complete</p>}
 
-          {draftOrder.map(name => {
-            const team = teams[name] || [];
+          <div className="grid md:grid-cols-2 gap-6">
+  {draftOrder.map(name => {
+    const team = teams[name] || [];
+
+    const grouped = {
+      Forwards: team.filter(p => ['ST', 'FW', 'RW', 'LW'].includes(p.position)),
+      Midfielders: team.filter(p => ['CM', 'CAM', 'CDM'].includes(p.position)),
+      Defenders: team.filter(p => ['CB', 'LB', 'RB'].includes(p.position)),
+      Goalkeeper: team.filter(p => p.position === 'GK'),
+    };
+
+    return (
+      <div key={name} className="p-4 border rounded-lg shadow bg-white">
+        <h3 className="text-lg font-bold mb-2">
+          {name === 'You' ? 'Your Team' : `${name}'s Team`}
+        </h3>
+        {Object.entries(grouped).map(([label, players]) =>
+          players.length > 0 && (
+            <div key={label} className="mb-2">
+              <strong className="block text-sm text-gray-600">{label}</strong>
+              <ul className="ml-4 list-disc text-sm">
+                {players.map((p) => (
+                  <li key={p.id}>
+                    {p.name} ({p.position})
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )
+        )}
+      </div>
+    );
+  })}
+</div>
 
             const grouped = {
               Forwards: team.filter(p => ['ST', 'FW', 'RW', 'LW'].includes(p.position)),
