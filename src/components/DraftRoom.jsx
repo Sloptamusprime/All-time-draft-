@@ -254,12 +254,8 @@ return (
           </ul>
         </div>
       )
-    )}
-  </div>
-);
+    );
+  });
+};
 
-
-
-   
 export default DraftRoom;
-
