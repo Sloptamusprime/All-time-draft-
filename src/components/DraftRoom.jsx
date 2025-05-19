@@ -236,17 +236,28 @@ return (
           </div>
         )}
 
-        <button
-          onClick={resetDraft}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded"
-        >
-          Restart Draft
-               </button>
-      </>
+return (
+  <div key={name} className="mt-4">
+    <h3 className="font-medium">
+      {name === 'You' ? 'Your Team:' : `${name}'s Team:`}
+    </h3>
+    {Object.entries(grouped).map(([label, players]) =>
+      players.length > 0 && (
+        <div key={label}>
+          <strong>{label}:</strong>
+          <ul className="ml-4 list-disc">
+            {players.map((p) => (
+              <li key={p.id}>
+                {p.name} ({p.position})
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
     )}
-  </>
+  </div>
 );
-};
+
 
    
 export default DraftRoom;
