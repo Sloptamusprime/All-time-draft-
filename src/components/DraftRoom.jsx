@@ -152,7 +152,7 @@ return (
 {draftOrder.map(name => {
   const team = teams[name] || [];
 
-<div className="grid md:grid-cols-2 gap-6">
+<div className="grid md:grid-cols-2 gap-6 mt-8">
   {draftOrder.map(name => {
     const team = teams[name] || [];
 
@@ -187,66 +187,38 @@ return (
   })}
 </div>
 
+<h2 className="text-2xl font-bold border-b pb-2 mt-12">Available Players</h2>
+<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+  {playersLeft
+    .filter(p => !drafted.includes(p.id))
+    .map(player => (
+      <button key={player.id} onClick={() => handlePick(player)}>
+        <PlayerCard player={player} />
+      </button>
+    ))}
+</div>
 
-            const grouped = {
-              Forwards: team.filter(p => ['ST', 'FW', 'RW', 'LW'].includes(p.position)),
-              Midfielders: team.filter(p => ['CM', 'CAM', 'CDM'].includes(p.position)),
-              Defenders: team.filter(p => ['CB', 'LB', 'RB'].includes(p.position)),
-              Goalkeeper: team.filter(p => p.position === 'GK'),
-            };
+{!drafting && started && (
+  <div className="mt-8 text-center">
+    <button
+      onClick={simulateMatch}
+      className="px-6 py-3 bg-purple-700 text-white rounded hover:bg-purple-800"
+    >
+      Simulate Match
+    </button>
+  </div>
+)}
 
-            return (
-              <div key={name} className="mt-4">
-                <h3 className="font-medium">
-                  {name === 'You' ? 'Your Team:' : `${name}'s Team:`}
-                </h3>
-                {Object.entries(grouped).map(([label, players]) =>
-                  players.length > 0 && (
-                    <div key={label}>
-                      <strong>{label}:</strong>
-                      <ul className="ml-4 list-disc">
-                        {players.map(p => (
-                          <li key={p.id}>{p.name} ({p.position})</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )
-                )}
-              </div>
-            );
-          })}
+{matchSummary && (
+  <div className="mt-6 bg-gray-800 text-green-300 p-6 rounded-lg shadow whitespace-pre-wrap font-mono text-sm max-w-2xl mx-auto">
+    {matchSummary}
+  </div>
+)}
 
-          <h2 className="mt-6 text-lg font-semibold">Available Players</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-            {playersLeft
-              .filter(p => !drafted.includes(p.id))
-              .map(player => (
-                <button key={player.id} onClick={() => handlePick(player)}>
-                  <PlayerCard player={player} />
-                </button>
-            ))}
-          </div>
-
-          {!drafting && started && (
-            <div className="mt-6">
-              <button
-                onClick={simulateMatch}
-                className="px-4 py-2 bg-purple-600 text-white rounded"
-              >
-                Simulate Match
-              </button>
-            </div>
-          )}
-
-          {matchSummary && (
-            <div className="mt-4 bg-black text-green-400 p-4 rounded whitespace-pre-wrap">
-              {matchSummary}
-            </div>
-          )}
-        </>
-      )}
-    </>
+</>
+)}
   );
 };
 
 export default DraftRoom;
+
