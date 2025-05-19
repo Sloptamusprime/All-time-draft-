@@ -41,26 +41,35 @@ const DraftRoom = () => {
     setStarted(true);
   };
 
-  const makePick = (drafter, player) => {
-    setDrafted(prev => [...prev, player.id]);
-    setTeams(prev => ({
-      ...prev,
-      [drafter]: [...prev[drafter], player]
-    }));
-    setPlayersLeft(prev => prev.filter(p => p.id !== player.id));
+const makePick = (drafter, player) => {
+  setDrafted(prev => [...prev, player.id]);
+  setTeams(prev => ({
+    ...prev,
+    [drafter]: [...prev[drafter], player]
+  }));
+  setPlayersLeft(prev => {
+    const updated = prev.filter(p => p.id !== player.id);
 
-    let nextIndex = currentPickIndex + 1;
-    let newRound = round;
-
-    if (nextIndex >= draftOrder.length) {
-      nextIndex = 0;
-      newRound++;
-      setDraftOrder(prev => [...prev].reverse());
+    // If this was the last player, end the draft
+    if (updated.length === 0) {
+      setDrafting(false);
     }
 
-    setCurrentPickIndex(nextIndex);
-    setRound(newRound);
-  };
+    return updated;
+  });
+
+  let nextIndex = currentPickIndex + 1;
+  let newRound = round;
+
+  if (nextIndex >= draftOrder.length) {
+    nextIndex = 0;
+    newRound++;
+    setDraftOrder(prev => [...prev].reverse());
+  }
+
+  setCurrentPickIndex(nextIndex);
+  setRound(newRound);
+};
 
   const handlePick = (player) => {
     if (drafted.includes(player.id)) return;
