@@ -61,7 +61,10 @@ const DraftRoom = () => {
 
     setCurrentPickIndex(nextIndex);
     setRound(newRound);
-  };
+    if (playersLeft.length - 1 === 0) {
+    setDrafting(false);
+  }
+};
 
   const handlePick = (player) => {
     if (drafted.includes(player.id)) return;
@@ -123,7 +126,7 @@ const DraftRoom = () => {
         <>
           <p className="mb-2">Current Pick: {draftOrder[currentPickIndex]}</p>
 
-          <div className="grid md:grid-cols-2 gap-6 mt-8">
+          <div className="grid md:grid-cols-2 gap-8 mt-10">
             {draftOrder.map(name => {
               const team = teams[name] || [];
 
@@ -135,13 +138,13 @@ const DraftRoom = () => {
               };
 
               return (
-                <div key={name} className="p-4 border rounded-lg shadow bg-white">
+                <div key={name} className="p-4 border rounded-lg shadow bg-white space-y-4">
                   <h3 className="text-lg font-bold mb-2">
                     {name === 'You' ? 'Your Team' : `${name}'s Team`}
                   </h3>
                   {Object.entries(grouped).map(([label, players]) =>
                     players.length > 0 && (
-                      <div key={label} className="mb-2">
+                      <div key={label} className="mb-4">
                         <strong className="block text-sm text-gray-600">{label}</strong>
                         <ul className="ml-4 list-disc text-sm">
                           {players.map((p) => (
@@ -158,7 +161,7 @@ const DraftRoom = () => {
             })}
           </div>
 
-          <h2 className="text-2xl font-bold border-b pb-2 mt-12">Available Players</h2>
+          <h2 className="text-2xl font-bold border-b pb-2 mt-16">Available Players</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
             {playersLeft
               .filter(p => !drafted.includes(p.id))
