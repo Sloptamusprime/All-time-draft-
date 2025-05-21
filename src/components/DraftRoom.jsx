@@ -187,37 +187,37 @@ return (
   })}
 </div>
 
-<h2 className="text-2xl font-bold border-b pb-2 mt-12">Available Players</h2>
-<div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-  {playersLeft
-    .filter(p => !drafted.includes(p.id))
-    .map(player => (
-      <button key={player.id} onClick={() => handlePick(player)}>
-        <PlayerCard player={player} />
-      </button>
-    ))}
-</div>
+return (
+  <div className="p-6 max-w-6xl mx-auto space-y-8">
+    <h2 className="text-2xl font-bold border-b pb-2 mt-12">Available Players</h2>
+    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+      {playersLeft
+        .filter(p => !drafted.includes(p.id))
+        .map(player => (
+          <button key={player.id} onClick={() => handlePick(player)}>
+            <PlayerCard player={player} />
+          </button>
+        ))}
+    </div>
 
-{!drafting && started && (
-  <div className="mt-8 text-center">
-    <button
-      onClick={simulateMatch}
-      className="px-6 py-3 bg-purple-700 text-white rounded hover:bg-purple-800"
-    >
-      Simulate Match
-    </button>
+    {!drafting && started && (
+      <div className="mt-8 text-center">
+        <button
+          onClick={simulateMatch}
+          className="px-6 py-3 bg-purple-700 text-white rounded hover:bg-purple-800"
+        >
+          Simulate Match
+        </button>
+      </div>
+    )}
+
+    {matchSummary && (
+      <div className="mt-6 bg-gray-800 text-green-300 p-6 rounded-lg shadow whitespace-pre-wrap font-mono text-sm max-w-2xl mx-auto">
+        {matchSummary}
+      </div>
+    )}
   </div>
-)}
-
-{matchSummary && (
-  <div className="mt-6 bg-gray-800 text-green-300 p-6 rounded-lg shadow whitespace-pre-wrap font-mono text-sm max-w-2xl mx-auto">
-    {matchSummary}
-  </div>
-)}
-
-</>
-)}
-  );
+ );
 };
 
 export default DraftRoom;
