@@ -32,59 +32,41 @@ const DraftRoom = () => {
     for (let i = 1; i <= numCPUs; i++) {
       newOrder.push(`CPU${i}`);
     }
-    setDraftOrder(newOrder);
 
     const initialTeams = { You: [] };
     newOrder.slice(1).forEach(cpu => (initialTeams[cpu] = []));
+
+    setDraftOrder(newOrder);
     setTeams(initialTeams);
     setDrafting(true);
     setStarted(true);
   };
 
-const makePick = (drafter, player) => {
-  setDrafted(prev => [...prev, player.id]);
-  setTeams(prev => ({
-    ...prev,
-    [drafter]: [...prev[drafter], player]
-  }));
-  setPlayersLeft(prev => {
-    const updated = prev.filter(p => p.id !== player.id);
+  const makePick = (drafter, player) => {
+    setDrafted(prev => [...prev, player.id]);
+    setTeams(prev => ({
+      ...prev,
+      [drafter]: [...prev[drafter], player]
+    }));
+    setPlayersLeft(prev => prev.filter(p => p.id !== player.id));
 
-    // If this was the last player, end the draft
-    if (updated.length === 0) {
-      setDrafting(false);
+    let nextIndex = currentPickIndex + 1;
+    let newRound = round;
+
+    if (nextIndex >= draftOrder.length) {
+      nextIndex = 0;
+      newRound++;
+      setDraftOrder(prev => [...prev].reverse());
     }
 
-    return updated;
-  });
-
-  let nextIndex = currentPickIndex + 1;
-  let newRound = round;
-
-  if (nextIndex >= draftOrder.length) {
-    nextIndex = 0;
-    newRound++;
-    setDraftOrder(prev => [...prev].reverse());
-  }
-
-  setCurrentPickIndex(nextIndex);
-  setRound(newRound);
-};
+    setCurrentPickIndex(nextIndex);
+    setRound(newRound);
+  };
 
   const handlePick = (player) => {
     if (drafted.includes(player.id)) return;
     const drafter = draftOrder[currentPickIndex];
     makePick(drafter, player);
-  };
-
-  const resetDraft = () => {
-    setPlayersLeft(players);
-    setDrafted([]);
-    setTeams({});
-    setCurrentPickIndex(0);
-    setRound(1);
-    setDrafting(false);
-    setStarted(false);
   };
 
   const simulateMatch = () => {
@@ -116,11 +98,8 @@ const makePick = (drafter, player) => {
     setMatchSummary(log);
   };
 
-  const draftComplete = playersLeft.length === 0;
-
-return (
-  <div className="p-6 max-w-6xl mx-auto space-y-8">
-    <h1 className="text-3xl font-bold text-center">GOAT Draft - Snake Mode</h1>
+  return (
+    <div className="p-6 max-w-6xl mx-auto space-y-8">
       {!started ? (
         <div>
           <label className="block mb-2">Number of CPU Opponents:</label>
@@ -143,82 +122,74 @@ return (
       ) : (
         <>
           <p className="mb-2">Current Pick: {draftOrder[currentPickIndex]}</p>
-          {draftComplete && <p className="mb-4 font-semibold">Draft Complete</p>}
 
-          <div className="grid md:grid-cols-2 gap-6">
-  {draftOrder.map(name => {
-    const team = teams[name] || [];
+          <div className="grid md:grid-cols-2 gap-6 mt-8">
+            {draftOrder.map(name => {
+              const team = teams[name] || [];
 
-{draftOrder.map(name => {
-  const team = teams[name] || [];
+              const grouped = {
+                Forwards: team.filter(p => ['ST', 'FW', 'RW', 'LW'].includes(p.position)),
+                Midfielders: team.filter(p => ['CM', 'CAM', 'CDM'].includes(p.position)),
+                Defenders: team.filter(p => ['CB', 'LB', 'RB'].includes(p.position)),
+                Goalkeeper: team.filter(p => p.position === 'GK'),
+              };
 
-<div className="grid md:grid-cols-2 gap-6 mt-8">
-  {draftOrder.map(name => {
-    const team = teams[name] || [];
+              return (
+                <div key={name} className="p-4 border rounded-lg shadow bg-white">
+                  <h3 className="text-lg font-bold mb-2">
+                    {name === 'You' ? 'Your Team' : `${name}'s Team`}
+                  </h3>
+                  {Object.entries(grouped).map(([label, players]) =>
+                    players.length > 0 && (
+                      <div key={label} className="mb-2">
+                        <strong className="block text-sm text-gray-600">{label}</strong>
+                        <ul className="ml-4 list-disc text-sm">
+                          {players.map((p) => (
+                            <li key={p.id}>
+                              {p.name} ({p.position})
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )
+                  )}
+                </div>
+              );
+            })}
+          </div>
 
-    const grouped = {
-      Forwards: team.filter(p => ['ST', 'FW', 'RW', 'LW'].includes(p.position)),
-      Midfielders: team.filter(p => ['CM', 'CAM', 'CDM'].includes(p.position)),
-      Defenders: team.filter(p => ['CB', 'LB', 'RB'].includes(p.position)),
-      Goalkeeper: team.filter(p => p.position === 'GK'),
-    };
+          <h2 className="text-2xl font-bold border-b pb-2 mt-12">Available Players</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+            {playersLeft
+              .filter(p => !drafted.includes(p.id))
+              .map(player => (
+                <button key={player.id} onClick={() => handlePick(player)}>
+                  <PlayerCard player={player} />
+                </button>
+              ))}
+          </div>
 
-    return (
-      <div key={name} className="p-4 border rounded-lg shadow bg-white">
-        <h3 className="text-lg font-bold mb-2">
-          {name === 'You' ? 'Your Team' : `${name}'s Team`}
-        </h3>
-        {Object.entries(grouped).map(([label, players]) =>
-          players.length > 0 && (
-            <div key={label} className="mb-2">
-              <strong className="block text-sm text-gray-600">{label}</strong>
-              <ul className="ml-4 list-disc text-sm">
-                {players.map((p) => (
-                  <li key={p.id}>
-                    {p.name} ({p.position})
-                  </li>
-                ))}
-              </ul>
+          {!drafting && started && (
+            <div className="mt-8 text-center">
+              <button
+                onClick={simulateMatch}
+                className="px-6 py-3 bg-purple-700 text-white rounded hover:bg-purple-800"
+              >
+                Simulate Match
+              </button>
             </div>
-          )
-        )}
-      </div>
-    );
-  })}
-</div>
+          )}
 
-return (
-  <div className="p-6 max-w-6xl mx-auto space-y-8">
-    <h2 className="text-2xl font-bold border-b pb-2 mt-12">Available Players</h2>
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-      {playersLeft
-        .filter(p => !drafted.includes(p.id))
-        .map(player => (
-          <button key={player.id} onClick={() => handlePick(player)}>
-            <PlayerCard player={player} />
-          </button>
-        ))}
+          {matchSummary && (
+            <div className="mt-6 bg-gray-800 text-green-300 p-6 rounded-lg shadow whitespace-pre-wrap font-mono text-sm max-w-2xl mx-auto">
+              {matchSummary}
+            </div>
+          )}
+        </>
+      )}
     </div>
-
-    {!drafting && started && (
-      <div className="mt-8 text-center">
-        <button
-          onClick={simulateMatch}
-          className="px-6 py-3 bg-purple-700 text-white rounded hover:bg-purple-800"
-        >
-          Simulate Match
-        </button>
-      </div>
-    )}
-
-    {matchSummary && (
-      <div className="mt-6 bg-gray-800 text-green-300 p-6 rounded-lg shadow whitespace-pre-wrap font-mono text-sm max-w-2xl mx-auto">
-        {matchSummary}
-      </div>
-       )}
-  </div>
-);
+  );
 };
 
-
 export default DraftRoom;
+
