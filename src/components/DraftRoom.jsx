@@ -195,7 +195,7 @@ return (
               {matchSummary}
             </div>
           )}
-        </>
+        <>
       )}
     </>
   );
