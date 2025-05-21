@@ -195,11 +195,10 @@ return (
               {matchSummary}
             </div>
           )}
-        <>
+        </>
       )}
-    </div>
-  ));
+    </>
+  );
 };
 
 export default DraftRoom;
-
