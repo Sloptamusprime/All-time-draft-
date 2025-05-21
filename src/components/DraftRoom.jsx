@@ -158,16 +158,6 @@ const DraftRoom = () => {
                       </div>
                     )
                   )}
-                  {!drafting && started && (
-                    <div className="mt-8 text-center">
-                      <button
-                        onClick={simulateMatch}
-                        className="px-6 py-3 bg-purple-700 text-white rounded hover:bg-purple-800"
-                      >
-                        Simulate Match
-                      </button>
-                    </div>
-                  )}
                 </div>
               );
             })}
@@ -187,6 +177,17 @@ const DraftRoom = () => {
                 </button>
               ))}
           </div>
+
+          {!drafting && started && (
+            <div className="mt-8 text-center">
+              <button
+                onClick={simulateMatch}
+                className="px-6 py-3 bg-purple-700 text-white rounded hover:bg-purple-800"
+              >
+                Simulate Match
+              </button>
+            </div>
+          )}
         </>
       )}
 
