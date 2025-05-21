@@ -158,18 +158,18 @@ const DraftRoom = () => {
           </div>
 
           <h2 className="text-2xl font-bold border-b pb-2 mt-16">Available Players</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
             {playersLeft
               .filter((p) => !drafted.includes(p.id))
               .map((player) => (
                 <button
                   key={player.id}
                   onClick={() => handlePick(player)}
-                  className="border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-md hover:scale-105 transition-transform duration-200 text-left space-y-1 text-sm"
+                  className="flex flex-col items-start border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-md hover:scale-105 transition-transform duration-200 text-left space-y-1 text-sm h-full"
                 >
-                  <div className="font-semibold text-base">{player.name}</div>
-                  <div className="text-gray-600">Position: {player.position}</div>
-                  <div className="text-gray-500">Rating: {player.rating}</div>
+                  <div className="w-full font-semibold text-base text-center">{player.name}</div>
+                  <div className="w-full text-center text-gray-600">{player.position}</div>
+                  <div className="w-full text-center text-gray-500">Rating: {player.rating}</div>
                 </button>
               ))}
           </div>
@@ -197,4 +197,3 @@ const DraftRoom = () => {
 };
 
 export default DraftRoom;
-
