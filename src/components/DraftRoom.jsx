@@ -198,7 +198,7 @@ return (
         <>
       )}
     </div>
-  );
+  ));
 };
 
 export default DraftRoom;
