@@ -137,29 +137,30 @@ const DraftRoom = () => {
                 Goalkeeper: team.filter(p => p.position === 'GK'),
               };
 
-              return (
-                <div key={name} className="p-4 border rounded-lg shadow bg-white space-y-4">
-                  <h3 className="text-lg font-bold mb-2">
-                    {name === 'You' ? 'Your Team' : `${name}'s Team`}
-                  </h3>
-                  {Object.entries(grouped).map(([label, players]) =>
-                    players.length > 0 && (
-                      <div key={label} className="mb-4">
-                        <strong className="block text-sm text-gray-600">{label}</strong>
-                        <ul className="ml-4 list-disc text-sm">
-                          {players.map((p) => (
-                            <li key={p.id}>
-                              {p.name} ({p.position})
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    )
-                  )}
-                </div>
-              );
-            })}
-          </div>
+return (
+  <div key={name} className="p-4 border rounded-lg shadow bg-white space-y-4">
+    <h3 className="text-lg font-bold mb-2">
+      {name === 'You' ? 'Your Team' : `${name}'s Team`}
+    </h3>
+    {Object.entries(grouped).map(([label, players]) =>
+      players.length > 0 && (
+        <div key={label} className="mb-6">
+          <strong className="block text-sm text-gray-600 mb-1">{label}</strong>
+          <ul className="grid grid-cols-2 gap-2 text-sm">
+            {players.map((p) => (
+              <li
+                key={p.id}
+                className="border border-gray-300 rounded px-2 py-1 bg-white shadow-sm"
+              >
+                {p.name} ({p.position})
+              </li>
+            ))}
+          </ul>
+        </div>
+      )
+    )}
+  </div>
+);
 
           <h2 className="text-2xl font-bold border-b pb-2 mt-16">Available Players</h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
