@@ -162,16 +162,22 @@ return (
   </div>
 );
 
-          <h2 className="text-2xl font-bold border-b pb-2 mt-16">Available Players</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-            {playersLeft
-              .filter(p => !drafted.includes(p.id))
-              .map(player => (
-                <button key={player.id} onClick={() => handlePick(player)}>
-                  <PlayerCard player={player} />
-                </button>
-              ))}
-          </div>
+<div className="mt-16">
+  <h2 className="text-2xl font-bold border-b pb-2 mb-4">Available Players</h2>
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+    {playersLeft
+      .filter((p) => !drafted.includes(p.id))
+      .map((player) => (
+        <button
+          key={player.id}
+          onClick={() => handlePick(player)}
+          className="hover:scale-105 transition-transform duration-200"
+        >
+          <PlayerCard player={player} />
+        </button>
+      ))}
+  </div>
+</div>
 
           {!drafting && started && (
             <div className="mt-8 text-center">
