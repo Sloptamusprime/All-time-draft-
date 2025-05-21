@@ -162,15 +162,15 @@ const DraftRoom = () => {
             {playersLeft
               .filter((p) => !drafted.includes(p.id))
               .map((player) => (
-                <button
+                <div
                   key={player.id}
                   onClick={() => handlePick(player)}
-                  className="flex flex-col items-start border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-md hover:scale-105 transition-transform duration-200 text-left space-y-1 text-sm h-full"
+                  className="cursor-pointer flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white shadow hover:scale-105 transition-transform duration-200 space-y-1 text-sm text-center"
                 >
-                  <div className="w-full font-semibold text-base text-center">{player.name}</div>
-                  <div className="w-full text-center text-gray-600">{player.position}</div>
-                  <div className="w-full text-center text-gray-500">Rating: {player.rating}</div>
-                </button>
+                  <div className="font-semibold text-base">{player.name}</div>
+                  <div className="text-gray-600">{player.position}</div>
+                  <div className="text-gray-500">Rating: {player.rating}</div>
+                </div>
               ))}
           </div>
 
