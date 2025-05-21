@@ -16,7 +16,6 @@ const DraftRoom = () => {
 
   useEffect(() => {
     if (!drafting || playersLeft.length === 0) return;
-
     const drafter = draftOrder[currentPickIndex];
     if (drafter !== 'You') {
       const available = playersLeft.filter(p => !drafted.includes(p.id));
@@ -32,10 +31,8 @@ const DraftRoom = () => {
     for (let i = 1; i <= numCPUs; i++) {
       newOrder.push(`CPU${i}`);
     }
-
     const initialTeams = { You: [] };
     newOrder.slice(1).forEach(cpu => (initialTeams[cpu] = []));
-
     setDraftOrder(newOrder);
     setTeams(initialTeams);
     setDrafting(true);
@@ -76,14 +73,11 @@ const DraftRoom = () => {
   const simulateMatch = () => {
     const allTeams = Object.entries(teams);
     if (allTeams.length < 2) return;
-
     const [userTeamName, userPlayers] = allTeams[0];
     const [cpuTeamName, cpuPlayers] = allTeams[1];
-
     let log = `🏟️ ${userTeamName} vs ${cpuTeamName}\n\n`;
     let userScore = 0;
     let cpuScore = 0;
-
     for (let min = 5; min <= 90; min += 5) {
       if (Math.random() < 0.2) {
         if (Math.random() < 0.5) {
@@ -97,8 +91,7 @@ const DraftRoom = () => {
         }
       }
     }
-
-    log += `\n🖚 Final Score — You: ${userScore} | CPU: ${cpuScore}`;
+    log += `\n🔚 Final Score — You: ${userScore} | CPU: ${cpuScore}`;
     setMatchSummary(log);
   };
 
@@ -135,7 +128,6 @@ const DraftRoom = () => {
                 Defenders: team.filter(p => ['CB', 'LB', 'RB'].includes(p.position)),
                 Goalkeeper: team.filter(p => p.position === 'GK'),
               };
-
               return (
                 <div key={name} className="p-4 border rounded-lg shadow bg-white space-y-4">
                   <h3 className="text-lg font-bold mb-2">
@@ -144,14 +136,16 @@ const DraftRoom = () => {
                   {Object.entries(grouped).map(([label, players]) =>
                     players.length > 0 && (
                       <div key={label} className="mb-6">
-                        <strong className="block text-sm text-gray-600 mb-1">{label}</strong>
-                        <ul className="grid grid-cols-2 gap-2 text-sm">
+                        <strong className="block text-sm text-gray-600 mb-2">{label}</strong>
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                           {players.map((p) => (
                             <li
                               key={p.id}
-                              className="border border-gray-300 rounded px-2 py-1 bg-white shadow-sm"
+                              className="border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-md space-y-1 text-sm"
                             >
-                              {p.name} ({p.position})
+                              <div className="font-semibold text-base">{p.name}</div>
+                              <div className="text-gray-600">Position: {p.position}</div>
+                              <div className="text-gray-500">Rating: {p.rating}</div>
                             </li>
                           ))}
                         </ul>
