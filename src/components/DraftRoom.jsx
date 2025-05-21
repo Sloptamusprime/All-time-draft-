@@ -193,10 +193,10 @@ return (
           {matchSummary && (
             <div className="mt-6 bg-gray-800 text-green-300 p-6 rounded-lg shadow whitespace-pre-wrap font-mono text-sm max-w-2xl mx-auto">
               {matchSummary}
-            </div>
-          )}
-        </>
-      )}
+              </div>
+            ))}
+        </div>
+      ))}
     </div>
   );
 };
