@@ -4,7 +4,7 @@ const PlayerCard = ({ player, onClick }) => {
   return (
     <div
       onClick={() => onClick(player)}
-      className="w-40 h-64 bg-gradient-to-b from-yellow-300 to-yellow-100 border-4 border-yellow-500 rounded-xl shadow-md p-2 flex flex-col items-center cursor-pointer hover:scale-105 transition-transform"
+      className="cursor-pointer w-40 h-64 bg-gradient-to-b from-yellow-300 to-yellow-100 border-2 border-gray-600 rounded-xl shadow-lg p-3 flex flex-col items-center text-center space-y-2 hover:scale-105 transition-transform"
     >
       <div className="w-full flex justify-between items-center text-sm font-bold text-gray-800">
         <span>{player.position}</span>
@@ -25,4 +25,3 @@ const PlayerCard = ({ player, onClick }) => {
 };
 
 export default PlayerCard;
-
