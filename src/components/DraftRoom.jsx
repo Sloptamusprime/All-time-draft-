@@ -13,6 +13,7 @@ const DraftRoom = () => {
   const [drafting, setDrafting] = useState(false);
   const [started, setStarted] = useState(false);
   const [matchSummary, setMatchSummary] = useState('');
+  const [tournamentWinner, setTournamentWinner] = useState(null);
 
   useEffect(() => {
     if (!drafting || playersLeft.length === 0) return;
@@ -40,159 +41,131 @@ const DraftRoom = () => {
   };
 
   const makePick = (drafter, player) => {
+    if (drafted.includes(player.id)) return;
+    setTeams(prev => {
+      const updated = { ...prev };
+      updated[drafter].push(player);
+      return updated;
+    });
     setDrafted(prev => [...prev, player.id]);
-    setTeams(prev => ({
-      ...prev,
-      [drafter]: [...prev[drafter], player]
-    }));
-    setPlayersLeft(prev => prev.filter(p => p.id !== player.id));
-
-    let nextIndex = currentPickIndex + 1;
-    let newRound = round;
-
-    if (nextIndex >= draftOrder.length) {
-      nextIndex = 0;
-      newRound++;
-      setDraftOrder(prev => [...prev].reverse());
-    }
-
-    setCurrentPickIndex(nextIndex);
-    setRound(newRound);
-
-    if (playersLeft.length - 1 === 0) {
-      setDrafting(false);
-    }
+    setCurrentPickIndex((prevIndex) => (prevIndex + 1) % draftOrder.length);
   };
 
   const handlePick = (player) => {
-    if (drafted.includes(player.id)) return;
     const drafter = draftOrder[currentPickIndex];
-    makePick(drafter, player);
+    if (drafter === 'You') {
+      makePick('You', player);
+    }
   };
 
-  const simulateMatch = () => {
-    const allTeams = Object.entries(teams);
-    if (allTeams.length < 2) return;
-    const [userTeamName, userPlayers] = allTeams[0];
-    const [cpuTeamName, cpuPlayers] = allTeams[1];
-    let log = `🏟️ ${userTeamName} vs ${cpuTeamName}\n\n`;
-    let userScore = 0;
-    let cpuScore = 0;
-    for (let min = 5; min <= 90; min += 5) {
-      if (Math.random() < 0.2) {
-        if (Math.random() < 0.5) {
-          const scorer = userPlayers.sort(() => 0.5 - Math.random()).sort((a, b) => b.rating - a.rating)[0];
-          userScore++;
-          log += `⚽ ${scorer.name} scored for YOU in the ${min}′!\n`;
-        } else {
-          const scorer = cpuPlayers.sort(() => 0.5 - Math.random()).sort((a, b) => b.rating - a.rating)[0];
-          cpuScore++;
-          log += `⚽ ${scorer.name} scored for CPU in the ${min}′!\n`;
-        }
-      }
+  const groupByPosition = (players) => {
+    return players.reduce((acc, player) => {
+      const position = player.position;
+      if (!acc[position]) acc[position] = [];
+      acc[position].push(player);
+      return acc;
+    }, {});
+  };
+
+  const simulateMatch = (teamA, teamB) => {
+    const scoreA = teamA.reduce((sum, p) => sum + p.rating, 0) + Math.random() * 10;
+    const scoreB = teamB.reduce((sum, p) => sum + p.rating, 0) + Math.random() * 10;
+    return scoreA >= scoreB ? teamA : teamB;
+  };
+
+  const simulateTournament = () => {
+    const teamEntries = Object.entries(teams);
+    if (teamEntries.length !== 4) {
+      setMatchSummary("Tournament requires 4 teams.");
+      return;
     }
-    log += `\n🔚 Final Score — You: ${userScore} | CPU: ${cpuScore}`;
-    setMatchSummary(log);
+
+    const [team1, team2, team3, team4] = teamEntries;
+    const semi1Winner = simulateMatch(team1[1], team2[1]);
+    const semi1Name = semi1Winner === team1[1] ? team1[0] : team2[0];
+
+    const semi2Winner = simulateMatch(team3[1], team4[1]);
+    const semi2Name = semi2Winner === team3[1] ? team3[0] : team4[0];
+
+    const finalWinner = simulateMatch(semi1Winner, semi2Winner);
+    const winnerName = finalWinner === semi1Winner ? semi1Name : semi2Name;
+
+    setMatchSummary(
+      `Semi-final 1: ${team1[0]} vs ${team2[0]} → ${semi1Name}\n` +
+      `Semi-final 2: ${team3[0]} vs ${team4[0]} → ${semi2Name}\n` +
+      `Final: ${semi1Name} vs ${semi2Name} → 🏆 ${winnerName}`
+    );
+    setTournamentWinner(winnerName);
   };
 
   return (
-    <div className="p-6 max-w-6xl mx-auto space-y-8">
+    <div className="max-w-7xl mx-auto px-4 py-8">
       {!started ? (
-        <div>
-          <label className="block mb-2">Number of CPU Opponents:</label>
-          <select
-            value={numCPUs}
-            onChange={e => setNumCPUs(parseInt(e.target.value))}
-            className="border px-2 py-1 rounded"
-          >
-            {[1, 2, 3, 4, 5].map(n => (
-              <option key={n} value={n}>{n}</option>
-            ))}
-          </select>
+        <div className="text-center">
+          <h1 className="text-3xl font-bold mb-4">All-Time Draft</h1>
           <button
             onClick={startDraft}
-            className="ml-4 px-4 py-2 bg-green-600 text-white rounded"
+            className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
           >
             Start Draft
           </button>
         </div>
       ) : (
         <>
-          <p className="mb-2">Current Pick: {draftOrder[currentPickIndex]}</p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
-            {draftOrder.map(name => {
-              const team = teams[name] || [];
-              const grouped = {
-                Forwards: team.filter(p => ['ST', 'FW', 'RW', 'LW'].includes(p.position)),
-                Midfielders: team.filter(p => ['CM', 'CAM', 'CDM'].includes(p.position)),
-                Defenders: team.filter(p => ['CB', 'LB', 'RB'].includes(p.position)),
-                Goalkeeper: team.filter(p => p.position === 'GK'),
-              };
+          <h2 className="text-2xl font-bold border-b pb-2 mt-6 mb-4">Available Players</h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 mb-10">
+            {playersLeft
+              .filter((p) => !drafted.includes(p.id))
+              .map((player) => (
+                <PlayerCard key={player.id} player={player} onClick={handlePick} />
+              ))}
+          </div>
+
+          <h2 className="text-xl font-semibold mb-4">Teams</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-8">
+            {Object.entries(teams).map(([name, team]) => {
+              const grouped = groupByPosition(team);
               return (
-                <div key={name} className="p-4 border rounded-lg shadow bg-white space-y-4 text-center">
-                  <h3 className="text-lg font-bold mb-2">
-                    {name === 'You' ? 'Your Team' : `${name}'s Team`}
-                  </h3>
-                  {Object.entries(grouped).map(([label, players]) =>
+                <div key={name} className="bg-white rounded shadow p-4">
+                  <h3 className="font-bold text-lg mb-2">{name === 'You' ? 'Your Team' : `${name}'s Team`}</h3>
+                  {Object.entries(grouped).map(([position, players]) => (
                     players.length > 0 && (
-                      <div key={label} className="mb-6">
-                        <strong className="block text-sm text-gray-600 mb-2">{label}</strong>
-                        <ul className="grid grid-cols-1 gap-3">
-                          {players.map((p) => (
-                            <li
-                              key={p.id}
-                              className="border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-sm space-y-1 text-sm"
-                            >
-                              <div className="font-semibold text-base">{p.name}</div>
-                              <div className="text-gray-600">{p.position}</div>
-                              <div className="text-gray-500">Rating: {p.rating}</div>
-                            </li>
+                      <div key={position} className="mb-2">
+                        <strong>{position}:</strong>
+                        <ul className="list-disc list-inside ml-4">
+                          {players.map(p => (
+                            <li key={p.id}>{p.name} ({p.rating})</li>
                           ))}
                         </ul>
                       </div>
                     )
-                  )}
+                  ))}
                 </div>
               );
             })}
           </div>
 
-          <h2 className="text-2xl font-bold border-b pb-2 mt-16">Available Players</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6 mt-6 justify-items-center">
-            {playersLeft
-              .filter((p) => !drafted.includes(p.id))
-              .map((player) => (
-                <div
-                  key={player.id}
-                  onClick={() => handlePick(player)}
-                  className="cursor-pointer"
-                >
-                  <PlayerCard player={player} />
-                </div>
-              ))}
-          </div>
-
-          {!drafting && started && (
-            <div className="mt-8 text-center">
+          {drafted.length === players.length && (
+            <div className="text-center">
               <button
-                onClick={simulateMatch}
-                className="px-6 py-3 bg-purple-700 text-white rounded hover:bg-purple-800"
+                onClick={simulateTournament}
+                className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 transition"
               >
-                Simulate Match
+                Simulate Tournament
               </button>
             </div>
           )}
-        </>
-      )}
 
-      {matchSummary && (
-        <div className="mt-6 bg-gray-800 text-green-300 p-6 rounded-lg shadow whitespace-pre-wrap font-mono text-sm max-w-2xl mx-auto">
-          {matchSummary}
-        </div>
+          {matchSummary && (
+            <div className="mt-8 bg-gray-100 p-4 rounded shadow whitespace-pre-wrap">
+              <h3 className="text-lg font-bold mb-2">Tournament Results</h3>
+              <p>{matchSummary}</p>
+            </div>
+          )}
+        </>
       )}
     </div>
   );
 };
 
 export default DraftRoom;
-
