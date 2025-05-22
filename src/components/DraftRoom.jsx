@@ -44,7 +44,7 @@ const DraftRoom = () => {
     if (drafted.includes(player.id)) return;
     setTeams(prev => {
       const updated = { ...prev };
-      updated[drafter].push(player);
+      updated[drafter] = [...updated[drafter], player];
       return updated;
     });
     setDrafted(prev => [...prev, player.id]);
@@ -103,6 +103,18 @@ const DraftRoom = () => {
       {!started ? (
         <div className="text-center">
           <h1 className="text-3xl font-bold mb-4">All-Time Draft</h1>
+          <label className="block mb-4">
+            <span className="text-gray-700">Number of CPUs:</span>
+            <select
+              className="ml-2 p-2 border rounded"
+              value={numCPUs}
+              onChange={(e) => setNumCPUs(Number(e.target.value))}
+            >
+              {[1, 2, 3, 4, 5].map((num) => (
+                <option key={num} value={num}>{num}</option>
+              ))}
+            </select>
+          </label>
           <button
             onClick={startDraft}
             className="bg-blue-600 text-white px-6 py-2 rounded hover:bg-blue-700 transition"
@@ -145,7 +157,7 @@ const DraftRoom = () => {
             })}
           </div>
 
-          {drafted.length === players.length && (
+          {Object.values(teams).every(t => t.length === teams['You'].length) && (
             <div className="text-center">
               <button
                 onClick={simulateTournament}
