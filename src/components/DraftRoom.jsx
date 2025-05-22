@@ -165,11 +165,11 @@ const DraftRoom = () => {
                 <button
                   key={player.id}
                   onClick={() => handlePick(player)}
-                  className="m-2 w-full border border-black rounded-lg px-4 py-3 bg-white shadow-lg hover:scale-105 transition-transform duration-200 text-center space-y-1 text-sm"
+                  className="flex flex-col items-center border border-gray-400 rounded-lg p-4 bg-white shadow-lg hover:scale-105 transition-transform duration-200 text-center"
                 >
-                  <div className="font-semibold text-base">{player.name}</div>
-                  <div className="text-gray-600">{player.position}</div>
-                  <div className="text-gray-500">Rating: {player.rating}</div>
+                  <div className="font-bold text-base mb-1">{player.name}</div>
+                  <div className="text-sm text-gray-600 mb-1">{player.position}</div>
+                  <div className="text-sm text-gray-500">Rating: {player.rating}</div>
                 </button>
               ))}
           </div>
@@ -197,4 +197,3 @@ const DraftRoom = () => {
 };
 
 export default DraftRoom;
-
