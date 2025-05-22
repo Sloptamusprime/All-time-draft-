@@ -162,13 +162,13 @@ const DraftRoom = () => {
             {playersLeft
               .filter((p) => !drafted.includes(p.id))
               .map((player) => (
-                <button
+                <div
                   key={player.id}
                   onClick={() => handlePick(player)}
-                  className="hover:scale-105 transition-transform duration-200"
+                  className="cursor-pointer hover:scale-105 transition-transform duration-200"
                 >
                   <PlayerCard player={player} />
-                </button>
+                </div>
               ))}
           </div>
 
