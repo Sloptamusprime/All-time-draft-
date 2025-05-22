@@ -125,12 +125,14 @@ const DraftRoom = () => {
       ) : (
         <>
           <h2 className="text-2xl font-bold border-b pb-2 mt-6 mb-4">Available Players</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 mb-10">
-            {playersLeft
-              .filter((p) => !drafted.includes(p.id))
-              .map((player) => (
-                <PlayerCard key={player.id} player={player} onClick={handlePick} />
-              ))}
+          <div className="flex justify-center">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-6 mb-10">
+              {playersLeft
+                .filter((p) => !drafted.includes(p.id))
+                .map((player) => (
+                  <PlayerCard key={player.id} player={player} onClick={handlePick} />
+                ))}
+            </div>
           </div>
 
           <h2 className="text-xl font-semibold mb-4">Teams</h2>
