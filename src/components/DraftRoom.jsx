@@ -158,14 +158,14 @@ const DraftRoom = () => {
           </div>
 
           <h2 className="text-2xl font-bold border-b pb-2 mt-16">Available Players</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6 mt-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6 mt-6 justify-items-center">
             {playersLeft
               .filter((p) => !drafted.includes(p.id))
               .map((player) => (
                 <div
                   key={player.id}
                   onClick={() => handlePick(player)}
-                  className="cursor-pointer hover:scale-105 transition-transform duration-200"
+                  className="cursor-pointer"
                 >
                   <PlayerCard player={player} />
                 </div>
