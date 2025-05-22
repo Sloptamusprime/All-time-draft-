@@ -119,7 +119,7 @@ const DraftRoom = () => {
       ) : (
         <>
           <p className="mb-2">Current Pick: {draftOrder[currentPickIndex]}</p>
-          <div className="grid md:grid-cols-2 gap-8 mt-10">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mt-10">
             {draftOrder.map(name => {
               const team = teams[name] || [];
               const grouped = {
@@ -129,7 +129,7 @@ const DraftRoom = () => {
                 Goalkeeper: team.filter(p => p.position === 'GK'),
               };
               return (
-                <div key={name} className="p-4 border rounded-lg shadow bg-white space-y-4">
+                <div key={name} className="p-4 border rounded-lg shadow bg-white space-y-4 text-center">
                   <h3 className="text-lg font-bold mb-2">
                     {name === 'You' ? 'Your Team' : `${name}'s Team`}
                   </h3>
@@ -137,14 +137,14 @@ const DraftRoom = () => {
                     players.length > 0 && (
                       <div key={label} className="mb-6">
                         <strong className="block text-sm text-gray-600 mb-2">{label}</strong>
-                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <ul className="grid grid-cols-1 gap-3">
                           {players.map((p) => (
                             <li
                               key={p.id}
-                              className="border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-md space-y-1 text-sm"
+                              className="border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-sm space-y-1 text-sm"
                             >
                               <div className="font-semibold text-base">{p.name}</div>
-                              <div className="text-gray-600">Position: {p.position}</div>
+                              <div className="text-gray-600">{p.position}</div>
                               <div className="text-gray-500">Rating: {p.rating}</div>
                             </li>
                           ))}
@@ -158,19 +158,19 @@ const DraftRoom = () => {
           </div>
 
           <h2 className="text-2xl font-bold border-b pb-2 mt-16">Available Players</h2>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 mt-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 xl:grid-cols-6 gap-6 mt-6">
             {playersLeft
               .filter((p) => !drafted.includes(p.id))
               .map((player) => (
-                <div
+                <button
                   key={player.id}
                   onClick={() => handlePick(player)}
-                  className="cursor-pointer flex flex-col items-center border border-gray-300 rounded-lg p-4 bg-white shadow hover:scale-105 transition-transform duration-200 space-y-1 text-sm text-center"
+                  className="flex flex-col items-center border border-gray-300 rounded-lg px-4 py-3 bg-white shadow-md hover:scale-105 transition-transform duration-200 text-center space-y-1 text-sm"
                 >
                   <div className="font-semibold text-base">{player.name}</div>
                   <div className="text-gray-600">{player.position}</div>
                   <div className="text-gray-500">Rating: {player.rating}</div>
-                </div>
+                </button>
               ))}
           </div>
 
