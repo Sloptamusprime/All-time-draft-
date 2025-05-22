@@ -165,11 +165,9 @@ const DraftRoom = () => {
                 <button
                   key={player.id}
                   onClick={() => handlePick(player)}
-                  className="flex flex-col items-center border border-gray-400 rounded-lg p-4 bg-white shadow-lg hover:scale-105 transition-transform duration-200 text-center"
+                  className="hover:scale-105 transition-transform duration-200"
                 >
-                  <div className="font-bold text-base mb-1">{player.name}</div>
-                  <div className="text-sm text-gray-600 mb-1">{player.position}</div>
-                  <div className="text-sm text-gray-500">Rating: {player.rating}</div>
+                  <PlayerCard player={player} />
                 </button>
               ))}
           </div>
@@ -197,3 +195,4 @@ const DraftRoom = () => {
 };
 
 export default DraftRoom;
+
